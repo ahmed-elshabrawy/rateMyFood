@@ -1,5 +1,14 @@
 <?php include 'includes/header.php'; ?>
 <?php include 'includes/sidebar.php'; ?>
+
+<?php
+// Fetch users from the database
+$stmt = $pdo->prepare("SELECT id, name, image, description FROM restaurants");
+$stmt->execute();
+$restaurants = $stmt->fetchAll();
+?>
+
+
 <!-- Main Content -->
 <div id="content">
     <?php include 'includes/nav.php' ?>
@@ -24,60 +33,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>
-                                <img src="../images/shaltat.jpg" alt="عم شلتت" width="50" height="50">
-                            </td>
-                            <td>عم شلتت</td>
-                            <td>
-                                <p>عم شلتت ملك الفطير المصري بالطعم الأصلي وغموس فلاحي زي ما قال الكتاب</p>
-                            </td>
-                            <td>
-                                <a href="edit_restaurant.php" class="btn btn-info btn-circle">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-                                <a href="#" class="btn btn-danger btn-circle">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>
-                                <img src="../images/shaltat.jpg" alt="عم شلتت" width="50" height="50">
-                            </td>
-                            <td>عم شلتت</td>
-                            <td>
-                                <p>عم شلتت ملك الفطير المصري بالطعم الأصلي وغموس فلاحي زي ما قال الكتاب</p>
-                            </td>
-                            <td>
-                                <a href="edit_restaurant.php" class="btn btn-info btn-circle">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-                                <a href="#" class="btn btn-danger btn-circle">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>
-                                <img src="../images/shaltat.jpg" alt="عم شلتت" width="50" height="50">
-                            </td>
-                            <td>عم شلتت</td>
-                            <td>
-                                <p>عم شلتت ملك الفطير المصري بالطعم الأصلي وغموس فلاحي زي ما قال الكتاب</p>
-                            </td>
-                            <td>
-                                <a href="edit_restaurant.php" class="btn btn-info btn-circle">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-                                <a href="#" class="btn btn-danger btn-circle">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
+                        <?php if (count($restaurants) > 0): ?>
+                            <?php foreach ($restaurants as $restaurant): ?>
+                                <tr>
+                                    <th scope="row"><?= htmlspecialchars($restaurant['id']) ?></th>
+                                    <td>
+                                        <img src="../images/<?= htmlspecialchars($restaurant['image']) ?>" alt="<?= htmlspecialchars($restaurant['name']) ?>" width="50" height="50">
+                                    </td>
+                                    <td><?= htmlspecialchars($restaurant['name']) ?></td>
+                                    <td>
+                                        <p><?= htmlspecialchars($restaurant['description']) ?></p>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <a href="edit_restaurant.php?id=<?= $restaurant['id'] ?>" class="btn btn-info btn-circle m-1">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+                                            <a href="delete_restaurant.php?id=<?= $restaurant['id'] ?>" class="btn btn-danger btn-circle m-1">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" class="text-center">No restaurants found</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

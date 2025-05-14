@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,6 +16,12 @@
         <h1 class="text-danger">RATEMYFOOD :: <?php echo isset($pageTitle) ? $pageTitle : 'Home'; ?></h1>
         <nav>
             <a href="index.php">Home</a> |
-            <a href="login.php">Login</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <span>Welcome, <?= htmlspecialchars($_SESSION['user_name']) ?></span> |
+                <a href="logout.php">Logout</a>
+            <?php else: ?>
+                <a href="login.php">Login</a> |
+                <a href="register.php">Register</a>
+            <?php endif; ?>
         </nav>
     </header>

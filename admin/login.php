@@ -1,3 +1,31 @@
+<?php
+session_start();
+
+require_once '../db.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+
+    if (!empty($email) && !empty($password)) {
+        $stmt = $pdo->prepare("SELECT * FROM admins WHERE email = ?");
+        $stmt->execute([$email]);
+        $admin = $stmt->fetch();
+
+        if ($admin && password_verify($password, $admin['password'])) {
+            $_SESSION['admin_id'] = $admin['id']; // Store the admin's ID in session
+            header('Location: index.php');
+            exit();
+        } else {
+            // Invalid credentials, show an error message
+            $error = "Invalid email or password!";
+        }
+    } else {
+        $error = "Please enter both email and password.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,15 +59,20 @@
                                         <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your
                                             account</h5>
 
+                                        <!-- Display error if exists -->
+                                        <?php if (isset($error)): ?>
+                                            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                                        <?php endif; ?>
+
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="form2Example17">Email address</label>
-                                            <input type="email" id="form2Example17"
+                                            <input type="email" id="form2Example17" name="email"
                                                 class="form-control form-control-lg" />
                                         </div>
 
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="form2Example27">Password</label>
-                                            <input type="password" id="form2Example27"
+                                            <input type="password" id="form2Example27" name="password"
                                                 class="form-control form-control-lg" />
                                         </div>
 

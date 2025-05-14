@@ -1,3 +1,16 @@
+<?php
+session_start(); // Start the session to access session variables
+
+if (!isset($_SESSION['admin_id'])) {
+    // Redirect to the login page if not logged in
+    header('Location: login.php');
+    exit(); // Stop further execution of the script after redirect
+}
+
+require_once '../db.php';
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

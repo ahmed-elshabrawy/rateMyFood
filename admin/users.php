@@ -1,5 +1,13 @@
 <?php include 'includes/header.php'; ?>
 <?php include 'includes/sidebar.php'; ?>
+
+<?php
+// Fetch users from the database
+$stmt = $pdo->prepare("SELECT id, name, email FROM users");
+$stmt->execute();
+$users = $stmt->fetchAll();
+?>
+
 <!-- Main Content -->
 <div id="content">
     <?php include 'includes/nav.php' ?>
@@ -23,21 +31,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Ahmed Ali</td>
-                            <td>ahmed@gmail.com</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Mona Ahmed</td>
-                            <td>mona@gmail.com</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>Mohamed Ali</td>
-                            <td>medo@gmail.com</td>
-                        </tr>
+                        <?php if (count($users) > 0): ?>
+                            <?php foreach ($users as $user): ?>
+                                <tr>
+                                    <th scope="row"><?= htmlspecialchars($user['id']) ?></th>
+                                    <td><?= htmlspecialchars($user['name']) ?></td>
+                                    <td><?= htmlspecialchars($user['email']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="3" class="text-center">No users found</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
